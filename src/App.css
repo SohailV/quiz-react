@@ -77,6 +77,17 @@ input[type="radio"]:checked + label {
   background: #D6DBF5;
 }
 
+.correct {
+  background: #94D7A2 !important;
+}
+
+.incorrect {
+  background: #F8BCBC !important;
+  color: #293264 !important;
+}
+
+
+
 .quiz {
   margin-top: 40px;
   margin-left: auto;
