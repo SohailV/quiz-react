@@ -8,16 +8,18 @@ import blob1 from "./assets/blob-top.png"
 import blob2 from "./assets/blob-bottom.png"
 
 
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     {/* shared images for same background across all pages */}
+    
     <section>
       <img src={blob1} className="img-top" />
       <img src={blob2} className="img-bottom" />
     </section>
+
     {/* Routering */}
+    
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />

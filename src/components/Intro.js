@@ -6,7 +6,7 @@ export default function Intro() {
            <div className="intro-content">
                 <h1 className="intro-header"> Quizzical </h1>
                 <p className="tagline"> Let The Show Begin </p>
-                <Link to="/Quiz" className="start-quiz">Start Quiz</Link>
+                <Link to="/Quiz" className="start-quiz" id="quiz-btn">Start Quiz</Link>
             </div>
         </main>
     );
