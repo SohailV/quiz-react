@@ -166,6 +166,7 @@ hr {
 @media only screen and (max-width: 600px) {
   .all-inputs {
     margin: 10px auto;
+    flex-direction: column;
     
   }
   hr {
