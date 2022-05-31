@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 
 export default function Intro() {
+    //Intro Page with link to Quiz Page.
     return(
         <main>
            <div className="intro-content">

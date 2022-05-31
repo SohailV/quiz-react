@@ -2,35 +2,42 @@ import { useEffect, useState } from "react";
 import Qna from "./Qna";
 
 export default function Quiz() {
+  // Quiz Array fetched from the API
   const [quizArray, setQuizArray] = useState([]);
-  const justOnce = 1;
+  // Load constant to Reload the Page after Quiz Completion
+  const [load, setLoad] = useState(0);
+  // To fetch the data once from the API
   useEffect(() => {
-    fetch("https://opentdb.com/api.php?amount=30&category=9")
+    fetch("https://opentdb.com/api.php?amount=5&difficulty=easy&type=multiple")
       .then((res) => res.json())
       .then((data) => setQuizArray(data.results));
-  }, [justOnce]);
-
-  console.log("this is Quiz Array", quizArray);
+  }, [load]);
+  // Adding the Selected option by the user to the Array. Storing only one value per question
   let singleOption = [];
-  let valueChanged = true;
+  // To handle the Single Option on click
   const handleClick = (event) => {
     let inputId = event.target.id;
     let inputCorrect = event.target.name;
     let inputValue = event.target.value;
+    let parent = document.getElementById(`${inputId}`).parentNode;
+    let valueChanged = true;
 
     if (singleOption.length === 0) {
       singleOption.push({
         id: inputId,
         value: inputValue,
         correctAns: inputCorrect,
+        qid: parent.id,
       });
     } else {
+      // Checking for any past Single Option data added.
       singleOption.forEach((item, index, array) => {
-        if (item.correctAns === inputCorrect) {
+        if (item.qid === parent.id) {
           array[index] = {
             id: inputId,
             value: inputValue,
             correctAns: inputCorrect,
+            qid: parent.id,
           };
           valueChanged = false;
           return;
@@ -40,50 +47,98 @@ export default function Quiz() {
               id: inputId,
               value: inputValue,
               correctAns: inputCorrect,
+              qid: parent.id,
             });
           }
         }
       });
     }
-
-    
-
-    // item => item.correctAns === inputCorrect ?
-    // (singleOption[singleOption.indexOf(item)] = {id: inputId, value: inputValue, correctAns: inputCorrect }) :
-    // singleOption.push({"id" : inputId, "value" : inputValue, "correctAns": inputCorrect}))
-    // , id:inputId, value: inputValue, correctAns: inputCorrect
-
-    // singleOption.push({"id" : inputId, "value" : inputValue, "correctAns": inputCorrect})
-    console.log("Array Test Single", singleOption);
   };
-
+  // Checking for the right Answers
+  let rightCount = 0;
   function checkAns() {
-      console.log("Ckeck Answer Clicked")
-    singleOption.forEach(
-        item=> item.value === item.correctAns ?
-        // console.log("right ans", item.id) : console.log("wrong ans", item.id) 
-        document.getElementById(`${item.id}`).nextElementSibling.style.backgroundColor = "#94D7A2" :
-        document.getElementById(`${item.id}`).nextElementSibling.style.backgroundColor = "#F8BCBC"
-        
-        )
-}
+    if (document.getElementById("checkAns").textContent === "Play Again") {
+      // Loading New five Questions
+      document.getElementById("checkAns").textContent = "Check Answers";
+      document.getElementById("score").textContent = "";
+      setLoad((oldLoad) => oldLoad + 1);
+    } else {
+      singleOption.forEach((item) => {
+        if (item.value === item.correctAns) {
+          // Incrementing number of right answers
+          rightCount++;
+          document.getElementById(
+            `${item.id}`
+          ).nextElementSibling.style.backgroundColor = "#94D7A2";
+          document.getElementById(
+            "score"
+          ).textContent = `You scored ${rightCount}/5 correct answers`;
+        } else {
+          // Highlighting wrong answers.
+          document.getElementById(
+            `${item.id}`
+          ).nextElementSibling.style.backgroundColor = "#F8BCBC";
+          document.getElementById(`${item.id}`).nextElementSibling.style.color =
+            "#293264";
+          document.getElementById(
+            "score"
+          ).textContent = `You scored ${rightCount}/5 correct answers`;
+        }
+        // Corrext Answer Array
+        let correctAnsArr = singleOption.map((item) => [
+          item.qid,
+          item.correctAns,
+        ]);
+        // Highlighting All the Right Answers.
+        correctAnsArr.forEach((item) => {
+          let qid = document.getElementById(`${item[0]}`);
+          let children = qid.children;
+          for (let i = 0; i < children.length; i++) {
+            if (children[i].value === item[1]) {
+              document.getElementById(
+                `${children[i].id}`
+              ).nextElementSibling.style.backgroundColor = "#94D7A2";
+            }
+          }
+        });
+      });
+      // Disabling options after submitting the answers.
+      let element = document.getElementsByTagName("input"),
+        index;
+      for (index = element.length - 1; index >= 0; index--) {
+        element[index].disabled = true;
+      }
+      // Changing text of the button element
+      document.getElementById("checkAns").textContent = "Play Again";
+    }
+  }
 
   return (
     <section className="quiz">
-      <Qna arr={quizArray} handleClick={handleClick} qid="1" />
-      <Qna arr={quizArray} handleClick={handleClick} qid="2" />
-      <Qna arr={quizArray} handleClick={handleClick} qid="3" />
-      <Qna arr={quizArray} handleClick={handleClick} qid="4" />
-      <Qna arr={quizArray} handleClick={handleClick} qid="5" />
+      {/* Conditional Rendering */}
+      {quizArray.length > 0 ? (
+        <>
+          <Qna arr={quizArray} handleClick={handleClick} qid="0" />
+          <Qna arr={quizArray} handleClick={handleClick} qid="1" />
+          <Qna arr={quizArray} handleClick={handleClick} qid="2" />
+          <Qna arr={quizArray} handleClick={handleClick} qid="3" />
+          <Qna arr={quizArray} handleClick={handleClick} qid="4" />
+        </>
+      ) : (
+        <h1>Loading...!!!</h1>
+      )}
 
-      <button
-        type="button"
-        className="start-quiz quiz-button"
-        id="checkAns"
-        onClick={checkAns}
-      >
-        Check Answers
-      </button>
+      <div className="score-button">
+        <p id="score"></p>
+        <button
+          type="button"
+          className="start-quiz quiz-button"
+          id="checkAns"
+          onClick={checkAns}
+        >
+          Check Answers
+        </button>
+      </div>
     </section>
   );
 }
