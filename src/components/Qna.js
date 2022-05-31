@@ -1,3 +1,4 @@
+import React from 'react';
 
 export default function Qna(props) {
   let currentQuest;

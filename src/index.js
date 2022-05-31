@@ -14,8 +14,8 @@ root.render(
     {/* shared images for same background across all pages */}
     
     <section>
-      <img src={blob1} className="img-top" />
-      <img src={blob2} className="img-bottom" />
+      <img src={blob1} className="img-top" alt='top' />
+      <img src={blob2} className="img-bottom" alt='bottom'/>
     </section>
 
     {/* Routering */}
