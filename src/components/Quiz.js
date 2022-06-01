@@ -63,7 +63,11 @@ export default function Quiz() {
       document.getElementById("checkAns").textContent = "Check Answers";
       document.getElementById("score").textContent = "";
       setLoad((oldLoad) => oldLoad + 1);
-    } else {
+    } else if (singleOption.length === 0) { 
+        document.getElementById(
+            "score"
+          ).textContent = "Please Select Atleast 1 Option";
+    }else {
       singleOption.forEach((item) => {
         if (item.value === item.correctAns) {
           // Incrementing number of right answers
